@@ -1,5 +1,3 @@
-import java.awt.Color
-
 import scala.swing._
 import scala.swing.event.ButtonClicked
 import swing.Swing
@@ -20,6 +18,7 @@ object gui extends SimpleSwingApplication {
 
   val blackBoardContent = new TextArea(){
                             name = "blackboard"
+                            text = "Content of the blackboard"
                             editable = false
                             preferredSize = new Dimension(100,100)
                             maximumSize = new Dimension(800, 400)
@@ -135,7 +134,8 @@ object gui extends SimpleSwingApplication {
                 reactions += {
                     case ButtonClicked(component) if (component == clearButton)
                       =>  {
-                            clearButton.text = "test"
+                            // Clearing the board.
+                            blackBoardContent.text = ""
                           }
                     case ButtonClicked(component) if (component == tellButton)
                       =>  {
@@ -161,7 +161,6 @@ object gui extends SimpleSwingApplication {
                       =>  {
 
                           }
-                    case _ => ???
                 }
     }
 }
