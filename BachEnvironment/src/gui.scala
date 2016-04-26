@@ -1,6 +1,7 @@
 import java.awt.Color
 
 import scala.swing._
+import scala.swing.event.ButtonClicked
 import swing.Swing
 
 /**
@@ -11,6 +12,11 @@ object gui extends SimpleSwingApplication {
                 title = "Bach Environment"
                 centerOnScreen()
                 //maximize()
+
+                preferredSize = new Dimension(800, 600)
+                maximumSize = new Dimension(1200, 600)
+                minimumSize = new Dimension(800, 400)
+                resizable = false
 
                 contents = new BoxPanel(Orientation.Vertical){
                     contents += new BoxPanel(Orientation.Horizontal){
@@ -102,6 +108,12 @@ object gui extends SimpleSwingApplication {
                         tooltip = "This button lets you create an agent and choose which (possible) instruction to execute."
                       }
                     }
+                }
+
+                reactions += {
+                  case ButtonClicked(component) => 
+
+
                 }
     }
 }
