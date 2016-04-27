@@ -11,13 +11,11 @@ object gui extends SimpleSwingApplication {
   val titleFont = new Font("Verdana", java.awt.Font.BOLD, 14)
 
   val contentLabel = new Label(){
-                      name = "contentLabel"
                       text = "Content of the BlackBoard"
                       font = titleFont
                     }
 
   val blackBoardContent = new TextArea(){
-                            name = "blackboard"
                             text = "Content of the blackboard"
                             editable = false
                             preferredSize = new Dimension(100,100)
@@ -25,7 +23,6 @@ object gui extends SimpleSwingApplication {
                           }
 
   val clearButton = new Button(){
-                      name = "clearButton"
                       text = "Clear"
                       tooltip = "Click to clear the content of the BlackBoard"
                     }
@@ -72,6 +69,8 @@ object gui extends SimpleSwingApplication {
                                 text = "New Interactive Agent"
                                 tooltip = "This button lets you create an agent and choose which (possible) instruction to execute."
                               }
+  // End of components definition
+
 
   def top = new MainFrame {
                 title = "Bach Environment"
@@ -136,6 +135,8 @@ object gui extends SimpleSwingApplication {
                       =>  {
                             // Clearing the board.
                             blackBoardContent.text = ""
+                            new AutonomousAgentGUI().open()
+
                           }
                     case ButtonClicked(component) if (component == tellButton)
                       =>  {
@@ -147,19 +148,19 @@ object gui extends SimpleSwingApplication {
                           }
                     case ButtonClicked(component) if (component == askButton)
                       =>  {
-
+                            // TODO Handle Ask Request
                           }
                     case ButtonClicked(component) if (component == naskButton)
                       =>  {
-
+                            // TODO Handle Nask Request
                           }
                     case ButtonClicked(component) if (component == autonomousAgentButton)
                       =>  {
-
+                            // TODO Handle AutonomousAgent Request
                           }
                     case ButtonClicked(component) if (component == interactiveAgentButton)
                       =>  {
-
+                            // TODO: Handle InteractiveAgent Request
                           }
                 }
     }
