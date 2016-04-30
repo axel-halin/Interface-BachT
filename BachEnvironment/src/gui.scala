@@ -135,8 +135,6 @@ object gui extends SimpleSwingApplication {
                       =>  {
                             // Clearing the board.
                             blackBoardContent.text = ""
-                            new AutonomousAgentGUI().open()
-
                           }
                     case ButtonClicked(component) if (component == tellButton)
                       =>  {
@@ -156,7 +154,7 @@ object gui extends SimpleSwingApplication {
                           }
                     case ButtonClicked(component) if (component == autonomousAgentButton)
                       =>  {
-                            // TODO Handle AutonomousAgent Request
+                            new AutonomousAgentGUI().open()
                           }
                     case ButtonClicked(component) if (component == interactiveAgentButton)
                       =>  {
