@@ -77,8 +77,6 @@ object gui extends SimpleSwingApplication {
 
   def top = new MainFrame {
                 title = "Bach Environment"
-                centerOnScreen()
-                //maximize()
                 preferredSize = new Dimension(800, 600)
                 resizable = false
 
@@ -153,7 +151,6 @@ object gui extends SimpleSwingApplication {
                           }
                     case ButtonClicked(component) if (component == getButton)
                       =>  {
-                            // TODO Handle Get Request
                             if (tokenTextField.text != "" && densityTextField.text != ""){
                                 if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
                                     var i = 0
@@ -171,11 +168,35 @@ object gui extends SimpleSwingApplication {
                           }
                     case ButtonClicked(component) if (component == askButton)
                       =>  {
-                            // TODO Handle Ask Request
+                            if(tokenTextField.text != "" && densityTextField.text != ""){
+                              if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
+                                  blackBoard.ask(tokenTextField.text)
+                                  Dialog.showMessage(askButton,"There is enough tokens on the blackboard !", "Success")
+                              } else{
+                                  blackBoard.ask(tokenTextField.text)
+                                  Dialog.showMessage(askButton,"Unfortunately, there isn't enough tokens on the blackboard...","Failure")
+                              }
+                            } else{
+                              Dialog.showMessage(askButton, "Please specify a token and a density.","An error occured")
+                            }
+
+                            blackBoardContent.text = blackBoard.getContent
                           }
                     case ButtonClicked(component) if (component == naskButton)
                       =>  {
-                            // TODO Handle Nask Request
+                            if(tokenTextField.text != "" && densityTextField.text != ""){
+                              if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
+                                blackBoard.ask(tokenTextField.text)
+                                Dialog.showMessage(askButton,"Unfortunately, there is enough tokens on the blackboard...","Failure")
+                              } else{
+                                blackBoard.ask(tokenTextField.text)
+                                Dialog.showMessage(askButton,"There isn't enough tokens on the blackboard !", "Success")
+                              }
+                            } else{
+                              Dialog.showMessage(askButton, "Please specify a token and a density.","An error occured")
+                            }
+
+                            blackBoardContent.text = blackBoard.getContent
                           }
                     case ButtonClicked(component) if (component == autonomousAgentButton)
                       =>  {
