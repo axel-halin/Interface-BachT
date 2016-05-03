@@ -51,7 +51,6 @@ class AutonomousAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) exte
                   }
 
 
-
   title = "Autonomous Agent"
   centerOnScreen()
   preferredSize = new Dimension(700, 400)
@@ -121,7 +120,14 @@ class AutonomousAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) exte
             else Dialog.showMessage(nextButton, "The execution of the next primitive returns a failure.","Error: next primitive failure")
         }
     case ButtonClicked(component) if component == runButton
-    => {}
+    =>  if (currentAgentValue.text == "") Dialog.showMessage(runButton, "The agent is empty. It cannot be run", "Error: Agent is empty")
+        else{
+            val res = agent.bacht_exec_all(expression)
+            if (res){
+                currentAgentValue.text = ""
+                blackboardDisplay.text = blackboard.getContent
+            } else Dialog.showMessage(runButton, "The execution of the agent returns a failure","Error: agent failure")
+        }
   }
 
   override def closeOperation : scala.Unit = this.close()
