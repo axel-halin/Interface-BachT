@@ -8,9 +8,6 @@ import scala.swing._
   */
 class AutonomousAgentGUI extends MainFrame {
 
-  // TODO
-  // 3 label (1 in scrollable view ??); 1 TextArea; 3 buttons
-
   // Components definition
   val titleFont = new Font("Verdana", java.awt.Font.BOLD, 14)
 

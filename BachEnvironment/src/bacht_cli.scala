@@ -118,6 +118,33 @@ class BachTStore {
       theStore = Map[String,Int]()
    }
 
+  /**
+    * Returns the content of the BlackBoard as a String
+    *
+    * @author Axel
+    */
+  def getContent:String ={
+      var res = ""
+      for((t,d) <- theStore) res += t+"("+d.toString+")"
+      res = "{" + res + "}"
+      res
+  }
+
+  /**
+    * Returns the density of the specified token.
+    * If the token is not in the Store, returns 0
+    *
+    * @param token Token to search in the store
+    * @return The density of the token
+    */
+  def findDensity(token:String):Int = {
+      try{
+          val density = theStore(token)
+          density
+      } catch{
+        case e:java.util.NoSuchElementException => 0
+      }
+  }
 }
 
 object bb extends BachTStore {

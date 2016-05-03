@@ -7,6 +7,9 @@ import swing.Swing
   */
 object gui extends SimpleSwingApplication {
 
+  var blackBoard = bb
+  val simulateur = new BachTSimul(blackBoard)
+
   // Components definition
   val titleFont = new Font("Verdana", java.awt.Font.BOLD, 14)
 
@@ -134,15 +137,37 @@ object gui extends SimpleSwingApplication {
                     case ButtonClicked(component) if (component == clearButton)
                       =>  {
                             // Clearing the board.
+                            blackBoard.clear_store
                             blackBoardContent.text = ""
                           }
                     case ButtonClicked(component) if (component == tellButton)
                       =>  {
-                            // TODO Handle Tell Request
+                            if (tokenTextField.text != "" && densityTextField.text != ""){
+                              var i = 0
+                              for (i <- 1 to densityTextField.text.toInt) blackBoard.tell(tokenTextField.text)
+                            } else{
+                              Dialog.showMessage(tellButton,"Please indicate a token and a density.","An error occured")
+                            }
+
+                            blackBoardContent.text = blackBoard.getContent
                           }
                     case ButtonClicked(component) if (component == getButton)
                       =>  {
                             // TODO Handle Get Request
+                            if (tokenTextField.text != "" && densityTextField.text != ""){
+                                if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
+                                    var i = 0
+                                    for (i <- 1 to densityTextField.text.toInt) {
+                                        blackBoard.get(tokenTextField.text)
+                                    }
+                                } else{
+                                  Dialog.showMessage(getButton, "There isn't enough of that token on the blackboard", "The primitive can't be treated")
+                                }
+                            } else{
+                                Dialog.showMessage(getButton, "Please specify a token and a density.","An error occured")
+                            }
+
+                            blackBoardContent.text = blackBoard.getContent
                           }
                     case ButtonClicked(component) if (component == askButton)
                       =>  {
@@ -158,7 +183,7 @@ object gui extends SimpleSwingApplication {
                           }
                     case ButtonClicked(component) if (component == interactiveAgentButton)
                       =>  {
-                            // TODO: Handle InteractiveAgent Request
+                            new InteractiveAgentGUI().open()
                           }
                 }
     }
