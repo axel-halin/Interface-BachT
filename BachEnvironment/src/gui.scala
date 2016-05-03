@@ -7,7 +7,7 @@ import swing.Swing
   */
 object gui extends SimpleSwingApplication {
 
-  var blackBoard = bb
+  var blackBoard = new BachTStore
   val simulateur = new BachTSimul(blackBoard)
 
   // Components definition
@@ -200,11 +200,11 @@ object gui extends SimpleSwingApplication {
                           }
                     case ButtonClicked(component) if (component == autonomousAgentButton)
                       =>  {
-                            new AutonomousAgentGUI().open()
+                            new AutonomousAgentGUI(blackBoard, blackBoardContent).open()
                           }
                     case ButtonClicked(component) if (component == interactiveAgentButton)
                       =>  {
-                            new InteractiveAgentGUI().open()
+                            new InteractiveAgentGUI(blackBoard, blackBoardContent).open()
                           }
                 }
     }

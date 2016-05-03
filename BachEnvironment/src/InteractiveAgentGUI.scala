@@ -5,7 +5,7 @@ import scala.swing._
 /**
   * Created by Axel on 23-04-16.
   */
-class InteractiveAgentGUI extends MainFrame {
+class InteractiveAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) extends MainFrame {
 
   // Components definition
   val titleFont = new Font("Verdana", java.awt.Font.BOLD, 14)

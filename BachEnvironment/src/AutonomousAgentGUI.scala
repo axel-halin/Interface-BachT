@@ -1,12 +1,16 @@
 import java.awt.{Dimension, Font}
 
 import scala.swing._
+import scala.swing.event.ButtonClicked
 
 
 /**
   * Created by Axel on 23-04-16.
   */
-class AutonomousAgentGUI extends MainFrame {
+class AutonomousAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) extends MainFrame {
+
+  var agent = new BachTSimul(blackboard)
+  var expression = new Expr
 
   // Components definition
   val titleFont = new Font("Verdana", java.awt.Font.BOLD, 14)
@@ -21,7 +25,7 @@ class AutonomousAgentGUI extends MainFrame {
 
   val currentAgentValue = new Label(){
                             tooltip = "Agent to be executed"
-                            text = "(tell(t,3);get(v,2)) || (ask(u,5);tell(w,6))"
+                            text = ""
                           }
 
   val agentTextArea = new TextArea(){
@@ -86,6 +90,38 @@ class AutonomousAgentGUI extends MainFrame {
         contents += Swing.HStrut(5)
         contents += nextButton
     }
+  }
+
+  listenTo(submitButton)
+  listenTo(nextButton)
+  listenTo(runButton)
+
+  reactions += {
+    case ButtonClicked(component) if component == submitButton
+    =>  // Check the input content
+        if(agentTextArea.text == ""){
+            Dialog.showMessage(submitButton,"Please enter the value of the agent","Error: Agent can't be empty")
+        } else{
+            val agentParsed = BachTSimulParser.parse_agent(agentTextArea.text)
+            if (agentParsed == null) Dialog.showMessage(submitButton,"The agent value is incorrect.\nThe agent wasn't recognised.", "Error: Agent not recognized")
+            else {currentAgentValue.text = agentParsed.toString; expression = agentParsed}
+        }
+    case ButtonClicked(component) if component == nextButton
+    =>  if (currentAgentValue.text == "") Dialog.showMessage(nextButton, "The agent is empty. It cannot be run", "Error: Agent is empty")
+        else{
+            val res = agent.run_one(expression)
+            if (res._1) {
+                expression = res._2
+                if (!expression.isInstanceOf[bacht_ast_empty_agent]){
+                    currentAgentValue.text = expression.toString
+                }
+                else currentAgentValue.text = ""
+                blackboardDisplay.text = blackboard.getContent
+            }
+            else Dialog.showMessage(nextButton, "The execution of the next primitive returns a failure.","Error: next primitive failure")
+        }
+    case ButtonClicked(component) if component == runButton
+    => {}
   }
 
   override def closeOperation : scala.Unit = this.close()

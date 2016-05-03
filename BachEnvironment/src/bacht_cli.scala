@@ -10,8 +10,29 @@
 
 class Expr
 case class bacht_ast_empty_agent() extends Expr
-case class bacht_ast_primitive(primitive: String, token: String) extends Expr
-case class bacht_ast_agent(op: String, agenti: Expr, agentii: Expr) extends Expr
+case class bacht_ast_primitive(primitive: String, token: String) extends Expr {
+  /**
+    * Returns the primitive in a structured String
+    *
+    * @return a String object of the token and its density.
+    * @author Axel Halin
+    */
+  override def toString:String = {
+    "[ " + primitive + "(" + token + ")" + " ]"
+  }
+}
+case class bacht_ast_agent(op: String, agenti: Expr, agentii: Expr) extends Expr{
+  /**
+    * Returns the agent in a structured String
+    *
+    * @return a String object of the operator between the two subagents
+    * @author Axel Halin
+    */
+  override def toString:String = {
+    "[ " + agenti.toString + " " + op + " " + agentii.toString + " ]"
+  }
+}
+
 import scala.util.parsing.combinator._
 import scala.util.matching.Regex
 
@@ -54,14 +75,18 @@ class BachTParsers extends RegexParsers {
 
 object BachTSimulParser extends BachTParsers {
 
+  // return nothing instead of @author Axel Halin
+
   def parse_primitive(prim: String) = parseAll(primitive,prim) match {
         case Success(result, _) => result
-        case failure : NoSuccess => scala.sys.error(failure.msg)
+        //case failure : NoSuccess => scala.sys.error(failure.msg)
+        case failure : NoSuccess => null
   }
 
   def parse_agent(ag: String) = parseAll(agent,ag) match {
         case Success(result, _) => result
-        case failure : NoSuccess => scala.sys.error(failure.msg)
+        //case failure : NoSuccess => scala.sys.error(failure.msg)
+        case failure:NoSuccess => null
   }
 
 }
@@ -121,7 +146,7 @@ class BachTStore {
   /**
     * Returns the content of the BlackBoard as a String
     *
-    * @author Axel
+    * @author Axel Halin
     */
   def getContent:String ={
       var res = ""
@@ -136,6 +161,7 @@ class BachTStore {
     *
     * @param token Token to search in the store
     * @return The density of the token
+    * @author Axel Halin
     */
   def findDensity(token:String):Int = {
       try{
@@ -301,6 +327,5 @@ object ag extends BachTSimul(bb) {
   }
   def eval(agent:String) { apply(agent) }
   def run(agent:String) { apply(agent) }
-
 }
          
