@@ -5,6 +5,11 @@ import scala.swing.event.ButtonClicked
 
 
 /**
+  * Autonomous Agent window of the application.
+  * This window allows the user to create an autonomous agent.
+  * The user can then either execute the whole agent at once or each primitive at a time.
+  * In the event of a bad execution (failure returned) a Dialog is displayed.
+  *
   * Created by Axel on 23-04-16.
   */
 class AutonomousAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) extends MainFrame {

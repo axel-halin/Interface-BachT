@@ -3,6 +3,9 @@ import scala.swing.event.ButtonClicked
 import swing.Swing
 
 /**
+  * Main window of the application.
+  * This window displays the blackboard and allows the user to execute primitives.
+  *
   * Created by Axel on 21-04-16.
   */
 object gui extends SimpleSwingApplication {
@@ -132,80 +135,60 @@ object gui extends SimpleSwingApplication {
 
                 // Defines the reactions of events (e.g buttonclicked)
                 reactions += {
-                    case ButtonClicked(component) if (component == clearButton)
-                      =>  {
-                            // Clearing the board.
-                            blackBoard.clear_store
-                            blackBoardContent.text = ""
-                          }
-                    case ButtonClicked(component) if (component == tellButton)
-                      =>  {
-                            if (tokenTextField.text != "" && densityTextField.text != ""){
-                              var i = 0
+                    case ButtonClicked(component) if component == clearButton
+                      =>  blackBoard.clear_store
+                          blackBoardContent.text = ""
+                    case ButtonClicked(component) if component == tellButton
+                      =>  if (tokenTextField.text != "" && densityTextField.text != ""){
                               for (i <- 1 to densityTextField.text.toInt) blackBoard.tell(tokenTextField.text)
                             } else{
                               Dialog.showMessage(tellButton,"Please indicate a token and a density.","An error occured")
                             }
-
-                            blackBoardContent.text = blackBoard.getContent
-                          }
-                    case ButtonClicked(component) if (component == getButton)
-                      =>  {
-                            if (tokenTextField.text != "" && densityTextField.text != ""){
+                          blackBoardContent.text = blackBoard.getContent
+                    case ButtonClicked(component) if component == getButton
+                      =>  if (tokenTextField.text != "" && densityTextField.text != ""){
                                 if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
-                                    var i = 0
-                                    for (i <- 1 to densityTextField.text.toInt) {
-                                        blackBoard.get(tokenTextField.text)
-                                    }
+                                    for (i <- 1 to densityTextField.text.toInt) blackBoard.get(tokenTextField.text)
                                 } else{
                                   Dialog.showMessage(getButton, "There isn't enough of that token on the blackboard", "The primitive can't be treated")
                                 }
                             } else{
-                                Dialog.showMessage(getButton, "Please specify a token and a density.","An error occured")
-                            }
-
-                            blackBoardContent.text = blackBoard.getContent
+                              Dialog.showMessage(getButton, "Please specify a token and a density.","An error occured")
                           }
-                    case ButtonClicked(component) if (component == askButton)
-                      =>  {
-                            if(tokenTextField.text != "" && densityTextField.text != ""){
-                              if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
-                                  blackBoard.ask(tokenTextField.text)
-                                  Dialog.showMessage(askButton,"There is enough tokens on the blackboard !", "Success")
-                              } else{
-                                  blackBoard.ask(tokenTextField.text)
-                                  Dialog.showMessage(askButton,"Unfortunately, there isn't enough tokens on the blackboard...","Failure")
-                              }
-                            } else{
-                              Dialog.showMessage(askButton, "Please specify a token and a density.","An error occured")
-                            }
 
-                            blackBoardContent.text = blackBoard.getContent
-                          }
-                    case ButtonClicked(component) if (component == naskButton)
-                      =>  {
-                            if(tokenTextField.text != "" && densityTextField.text != ""){
-                              if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
+                          blackBoardContent.text = blackBoard.getContent
+                    case ButtonClicked(component) if component == askButton
+                      =>  if(tokenTextField.text != "" && densityTextField.text != ""){
+                            if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
                                 blackBoard.ask(tokenTextField.text)
-                                Dialog.showMessage(askButton,"Unfortunately, there is enough tokens on the blackboard...","Failure")
-                              } else{
-                                blackBoard.ask(tokenTextField.text)
-                                Dialog.showMessage(askButton,"There isn't enough tokens on the blackboard !", "Success")
-                              }
+                                Dialog.showMessage(askButton,"There is enough tokens on the blackboard !", "Success")
                             } else{
-                              Dialog.showMessage(askButton, "Please specify a token and a density.","An error occured")
+                                blackBoard.ask(tokenTextField.text)
+                                Dialog.showMessage(askButton,"Unfortunately, there isn't enough tokens on the blackboard...","Failure")
                             }
+                          } else{
+                            Dialog.showMessage(askButton, "Please specify a token and a density.","An error occured")
+                          }
 
-                            blackBoardContent.text = blackBoard.getContent
+                          blackBoardContent.text = blackBoard.getContent
+                    case ButtonClicked(component) if component == naskButton
+                      =>  if(tokenTextField.text != "" && densityTextField.text != ""){
+                            if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
+                              blackBoard.ask(tokenTextField.text)
+                              Dialog.showMessage(askButton,"Unfortunately, there is enough tokens on the blackboard...","Failure")
+                            } else{
+                              blackBoard.ask(tokenTextField.text)
+                              Dialog.showMessage(askButton,"There isn't enough tokens on the blackboard !", "Success")
+                            }
+                          } else{
+                            Dialog.showMessage(askButton, "Please specify a token and a density.","An error occured")
                           }
-                    case ButtonClicked(component) if (component == autonomousAgentButton)
-                      =>  {
-                            new AutonomousAgentGUI(blackBoard, blackBoardContent).open()
-                          }
-                    case ButtonClicked(component) if (component == interactiveAgentButton)
-                      =>  {
-                            new InteractiveAgentGUI(blackBoard, blackBoardContent).open()
-                          }
+
+                          blackBoardContent.text = blackBoard.getContent
+                    case ButtonClicked(component) if component == autonomousAgentButton
+                      =>  new AutonomousAgentGUI(blackBoard, blackBoardContent).open()
+                    case ButtonClicked(component) if component == interactiveAgentButton
+                      =>  new InteractiveAgentGUI(blackBoard, blackBoardContent).open()
                 }
     }
 }
