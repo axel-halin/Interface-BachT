@@ -1,5 +1,6 @@
 import java.awt.{Dimension, Font}
 
+import scala.swing
 import scala.swing._
 import scala.swing.event.{ValueChanged, ButtonClicked}
 
@@ -83,6 +84,7 @@ class InteractiveAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) ext
   listenTo(submitButton)
   listenTo(blackboardDisplay)
 
+
   reactions += {
       case ButtonClicked(component) if component == submitButton
       =>  if (agentTextArea.text == "") Dialog.showMessage(submitButton, "Please enter the value of the agent.", "Error: Agent can't be empty")
@@ -101,6 +103,17 @@ class InteractiveAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) ext
       =>  agentLine.contents.clear()
           displayExpression(expression)
           agentLine.revalidate()
+      // If another button then submit is pressed.
+      case ButtonClicked(component)
+      =>  // Remove the component from the agent
+          // TODO
+          val res = agent.run_one(BachTSimulParser.parse_agent(component.text))
+          if  (!res._1) Dialog.showMessage(component, "Oops, an error occured while executing the primitive.\n"+component.text, "Error")
+          else {
+              print(res._2)
+              expression = res._2;
+              if (expression != bacht_ast_empty_agent) blackboardDisplay.text = blackboard.getContent
+          }
   }
 
   override def closeOperation : scala.Unit = this.close()
@@ -110,22 +123,29 @@ class InteractiveAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) ext
     */
   private def displayExpression(expression:Expr):Unit = {
       expression match {
-          case bacht_ast_empty_agent() => Unit
-          case bacht_ast_primitive(primitive: String, token: String) => {
+          case bacht_ast_empty_agent() => print("done")
+          case bacht_ast_primitive(primitive: String, token: String) => { agentLine.contents += new Label("[")
               primitive match{
-                case "tell" => agentLine.contents += new Button(primitive + "(" + token +")")
+                case "tell" => val button = new Button(primitive + "(" + token +")"); agentLine.contents += button; this.listenTo(button)
                 case "get" =>   val density = blackboard.findDensity(token)
-                                if (density > 0) agentLine.contents += new Button(primitive + "(" + token + ")")
+                                if (density > 0) {val button = new Button(primitive + "(" + token + ")"); agentLine.contents +=button; this.listenTo(button)}
                                 else agentLine.contents += new Label(primitive + "(" + token + ")")
                 case "ask" =>   val density = blackboard.findDensity(token)
-                                if (density > 0) agentLine.contents += new Button(primitive + "(" + token + ")")
+                                if (density > 0){val button = new Button(primitive + "(" + token + ")"); agentLine.contents += button; this.listenTo(button)}
                                 else agentLine.contents += new Label(primitive + "(" + token + ")")
                 case "nask" =>  val density = blackboard.findDensity(token)
                                 if (density > 0) agentLine.contents += new Label(primitive + "(" + token + ")")
-                                else agentLine.contents += new Button(primitive + "(" + token + ")")
+                                else{ val button = new Button(primitive + "(" + token + ")"); agentLine.contents += button; this.listenTo(button)}
               }
+              agentLine.contents += new Label("]")
           }
-          case bacht_ast_agent(op: String, agenti: Expr, agentii: Expr) => ???
+          case bacht_ast_agent(op: String, agenti: Expr, agentii: Expr) => agentLine.contents += {
+            new Label("[")
+            displayExpression(agenti)
+            new Label(op)
+            displayExpression(agentii)
+            new Label("]")
+          }
           case _ => Dialog.showMessage(submitButton, "An unknown error has occured", "Unknown Error")
       }
   }
