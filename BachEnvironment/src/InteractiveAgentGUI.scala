@@ -1,6 +1,4 @@
 import java.awt.{Dimension, Font}
-
-import scala.swing
 import scala.swing._
 import scala.swing.event.{ValueChanged, ButtonClicked}
 
@@ -92,6 +90,7 @@ class InteractiveAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) ext
               val agentParsed = BachTSimulParser.parse_agent(agentTextArea.text)
               if (agentParsed == null) Dialog.showMessage(submitButton, "The agent value is incorrect.\nThe agent wasn't recognised","Error: Agent not recognized")
               else {
+                  print(agentParsed.toString())
                   expression = agentParsed
                   agentLine.contents.clear()
                   displayExpression(expression)
@@ -105,15 +104,22 @@ class InteractiveAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) ext
           agentLine.revalidate()
       // If another button then submit is pressed.
       case ButtonClicked(component)
-      =>  // Remove the component from the agent
-          // TODO
-          val res = agent.run_one(BachTSimulParser.parse_agent(component.text))
-          if  (!res._1) Dialog.showMessage(component, "Oops, an error occured while executing the primitive.\n"+component.text, "Error")
-          else {
-              print(res._2)
-              expression = res._2;
-              if (expression != bacht_ast_empty_agent) blackboardDisplay.text = blackboard.getContent
+      =>  val componentExpression = BachTSimulParser.parse_agent(component.text)
+          componentExpression match {
+            case bacht_ast_primitive(primitive, token)
+            => primitive match {
+              case "tell" => blackboard.tell(token)
+              case "ask" => blackboard.ask(token)
+              case "get" => blackboard.get(token)
+              case "nask" => blackboard.nask(token)
+            }
+            case _ => Dialog.showMessage(component, "Component is not a primitive.", "Error")
           }
+          // Remove primitive from expression
+          component.visible = false
+          expression = expression.remove(BachTSimulParser.parse_primitive(component.text).asInstanceOf[bacht_ast_primitive])
+          blackboardDisplay.text = blackboard.getContent
+
   }
 
   override def closeOperation : scala.Unit = this.close()
@@ -139,13 +145,19 @@ class InteractiveAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) ext
               }
               agentLine.contents += new Label("]")
           }
-          case bacht_ast_agent(op: String, agenti: Expr, agentii: Expr) => agentLine.contents += {
-            new Label("[")
-            displayExpression(agenti)
-            new Label(op)
-            displayExpression(agentii)
-            new Label("]")
-          }
+          case bacht_ast_agent(op: String, agenti: Expr, agentii: Expr)
+          => op match{
+              case ";" => agentLine.contents += {
+                                                  displayExpression(agenti)
+                                                  new Label(agentii.toString)
+                                                }
+              case _ => agentLine.contents +={
+                          displayExpression(agenti);
+                          new Label(op)
+                          displayExpression(agentii)
+                          new Label("")
+                        }
+            }
           case _ => Dialog.showMessage(submitButton, "An unknown error has occured", "Unknown Error")
       }
   }

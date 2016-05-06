@@ -8,7 +8,9 @@
 
 ----------------------------------------------------------------------------*/
 
-class Expr
+class Expr {
+  def remove(expression:bacht_ast_primitive) = this
+}
 case class bacht_ast_empty_agent() extends Expr
 case class bacht_ast_primitive(primitive: String, token: String) extends Expr {
   /**
@@ -20,6 +22,16 @@ case class bacht_ast_primitive(primitive: String, token: String) extends Expr {
   override def toString:String = {
     "[ " + primitive + "(" + token + ")" + " ]"
   }
+
+  /**
+    * Returns a bacht_ast_empty_agent if expression matches the bacht_ast_primitive.
+    * Returns the bacht_ast_primitive otherwise.
+    *
+    * @param expression Expression to compare to.
+    * @return bacht_ast_empty_agent if it matches expression; self otherwise.
+    */
+  override def remove(expression:bacht_ast_primitive) = if (expression.primitive.equals(primitive) && expression.token.equals(token)) new bacht_ast_empty_agent
+                                                        else this
 }
 case class bacht_ast_agent(op: String, agenti: Expr, agentii: Expr) extends Expr{
   /**
@@ -30,6 +42,22 @@ case class bacht_ast_agent(op: String, agenti: Expr, agentii: Expr) extends Expr
     */
   override def toString:String = {
     "[ " + agenti.toString + " " + op + " " + agentii.toString + " ]"
+  }
+
+  /**
+    * Removes the occurence of expression from the bacht_ast_agent
+    *
+    * @param expression Expression to remove
+    * @return The bacht_ast_agent without expression.
+    * @author Axel Halin
+    */
+  override def remove(expression:bacht_ast_primitive) = {
+    op match {
+      case ";" => if (agenti.remove(expression).isInstanceOf[bacht_ast_empty_agent]) agentii
+                  else bacht_ast_agent(op, agenti, agentii.remove(expression))
+      case _ =>     bacht_ast_agent(op, agenti.remove(expression), agentii.remove(expression))
+    }
+
   }
 }
 
