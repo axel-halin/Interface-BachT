@@ -13,18 +13,14 @@ import scala.swing.event.ValueChanged
   */
 class VisualBlackboard(blackboard:BachTStore, blackboardDisplay:TextArea) extends MainFrame{
 
-  val flowPanel = new FlowPanel()
+  val flowPanel = new GridPanel(9,3)
 
   contents = new ScrollPane(){
     contents = flowPanel
-    
   }
 
-    //flowPanel
   title = "Visual Blackboard"
-  preferredSize = new Dimension(800, 600)
-  minimumSize = new Dimension(800,600)
-  maximumSize = new Dimension(800,600)
+  size = new Dimension(1000,600)
 
   listenTo(blackboardDisplay)
 
