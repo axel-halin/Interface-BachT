@@ -183,6 +183,7 @@ class BachTStore {
       res
   }
 
+
   /**
     * Returns the density of the specified token.
     * If the token is not in the Store, returns 0

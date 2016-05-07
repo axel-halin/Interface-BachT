@@ -77,6 +77,7 @@ object gui extends SimpleSwingApplication {
                               }
   // End of components definition
 
+  val visualBlackboard = new VisualBlackboard(blackBoard, blackBoardContent)
 
   def top = new MainFrame {
                 title = "Bach Environment"
@@ -145,6 +146,8 @@ object gui extends SimpleSwingApplication {
                               Dialog.showMessage(tellButton,"Please indicate a token and a density.","An error occured")
                             }
                           blackBoardContent.text = blackBoard.getContent
+                          visualBlackboard.repaint()
+                          visualBlackboard.flowPanel.revalidate()
                     case ButtonClicked(component) if component == getButton
                       =>  if (tokenTextField.text != "" && densityTextField.text != ""){
                                 if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
@@ -155,8 +158,9 @@ object gui extends SimpleSwingApplication {
                             } else{
                               Dialog.showMessage(getButton, "Please specify a token and a density.","An error occured")
                           }
-
                           blackBoardContent.text = blackBoard.getContent
+                          visualBlackboard.repaint()
+                          visualBlackboard.flowPanel.revalidate()
                     case ButtonClicked(component) if component == askButton
                       =>  if(tokenTextField.text != "" && densityTextField.text != ""){
                             if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
@@ -169,8 +173,9 @@ object gui extends SimpleSwingApplication {
                           } else{
                             Dialog.showMessage(askButton, "Please specify a token and a density.","An error occured")
                           }
-
                           blackBoardContent.text = blackBoard.getContent
+                          visualBlackboard.repaint()
+                          visualBlackboard.flowPanel.revalidate()
                     case ButtonClicked(component) if component == naskButton
                       =>  if(tokenTextField.text != "" && densityTextField.text != ""){
                             if (densityTextField.text.toInt <= blackBoard.findDensity(tokenTextField.text)){
@@ -183,12 +188,28 @@ object gui extends SimpleSwingApplication {
                           } else{
                             Dialog.showMessage(askButton, "Please specify a token and a density.","An error occured")
                           }
-
                           blackBoardContent.text = blackBoard.getContent
+                          visualBlackboard.repaint()
+                          visualBlackboard.flowPanel.revalidate()
                     case ButtonClicked(component) if component == autonomousAgentButton
                       =>  new AutonomousAgentGUI(blackBoard, blackBoardContent).open()
                     case ButtonClicked(component) if component == interactiveAgentButton
                       =>  new InteractiveAgentGUI(blackBoard, blackBoardContent).open()
                 }
+
+
+      menuBar = new MenuBar {
+        contents += new Menu("File") {
+          contents += new MenuItem(Action("Exit") {
+            sys.exit(0)
+          })
+          contents += new MenuItem(Action("Interactive Blackboard"){
+              visualBlackboard.open()
+          })
+        }
+      }
+
     }
+
+
 }
