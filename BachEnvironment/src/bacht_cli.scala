@@ -103,7 +103,7 @@ class BachTParsers extends RegexParsers {
 
 object BachTSimulParser extends BachTParsers {
 
-  // return nothing instead of @author Axel Halin
+  // return nothing instead of scala.sys.error
 
   def parse_primitive(prim: String) = parseAll(primitive,prim) match {
         case Success(result, _) => result
