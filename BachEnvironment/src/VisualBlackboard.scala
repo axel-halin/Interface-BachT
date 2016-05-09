@@ -59,8 +59,8 @@ class VisualBlackboard(blackboard:BachTStore, blackboardDisplay:TextArea) extend
                       }
                   }
                 }
-                blackboardDisplay.revalidate()
               }
+              blackboardDisplay.revalidate()
           }
   }
 

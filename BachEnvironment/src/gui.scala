@@ -10,8 +10,7 @@ import swing.Swing
   */
 object gui extends SimpleSwingApplication {
 
-  var blackBoard = new BachTStore
-  val simulateur = new BachTSimul(blackBoard)
+  val blackBoard = new BachTStore
 
   // Components definition
   val titleFont = new Font("Verdana", java.awt.Font.BOLD, 14)
@@ -139,6 +138,8 @@ object gui extends SimpleSwingApplication {
                     case ButtonClicked(component) if component == clearButton
                       =>  blackBoard.clear_store
                           blackBoardContent.text = ""
+                          visualBlackboard.repaint()
+                          visualBlackboard.flowPanel.revalidate()
                     case ButtonClicked(component) if component == tellButton
                       =>  if (tokenTextField.text != "" && densityTextField.text != ""){
                               for (i <- 1 to densityTextField.text.toInt) blackBoard.tell(tokenTextField.text)

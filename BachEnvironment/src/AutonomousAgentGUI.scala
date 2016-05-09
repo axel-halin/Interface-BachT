@@ -131,6 +131,7 @@ class AutonomousAgentGUI(blackboard:BachTStore, blackboardDisplay:TextArea) exte
             if (res){
                 currentAgentValue.text = ""
                 blackboardDisplay.text = blackboard.getContent
+                Dialog.showMessage(runButton, "The execution of the agent is a success !", "Success")
             } else Dialog.showMessage(runButton, "The execution of the agent returns a failure","Error: agent failure")
         }
   }
